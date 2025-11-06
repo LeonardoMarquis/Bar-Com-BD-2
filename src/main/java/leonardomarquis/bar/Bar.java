@@ -5,7 +5,12 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
 
+// com as novas atualizacoes do professor em 03/11/25, o ingresso nao vai para o cardapio, logo ele nao é pego do cardapio,
+// é contabilizado direto. Cpf será coletado como int, e Bar terá: apagarTudo()
+// deve ser para limpar no banco de dados, ja que no inicio de cada teste em "TesteBarResumido" é usado
 
+// Esse Bar.java, ja tem metodos funcionando localmente, e tem certos metodos com atividades no banco de dados
+// e tem metodos que mexem exclusivamente com alguma coisa no banco de dados
 public class Bar implements InterfaceBar {
 
     private List<Conta> contas = new ArrayList<>();
@@ -65,6 +70,11 @@ public class Bar implements InterfaceBar {
             conta.adicionarIngresso(ingresso, 1);
         }
         contas.add(conta);
+    }
+
+    @Override
+    public void abrirConta(int numConta, int cpf, String nomeCliente) throws ContaAberta, ContaInexistente, DadosInvalidos {
+
     }
 
     @Override
@@ -153,15 +163,14 @@ public class Bar implements InterfaceBar {
 
     @Override
     public void registrarPagamento(int numConta, double val)
-            throws PagamentoMaior, ContaInexistente, DadosInvalidos, ContaNaoFechada {
+            throws PagamentoMaior, ContaInexistente, DadosInvalidos {
         if (val <= 0)
             throw new DadosInvalidos();
 
         Conta conta = findContaByNumero(numConta);
         if (conta == null)
             throw new ContaInexistente();
-        if (!conta.isFechada())
-            throw new ContaNaoFechada();
+
 
         double restante = conta.getRestante();
         if (val > restante)
