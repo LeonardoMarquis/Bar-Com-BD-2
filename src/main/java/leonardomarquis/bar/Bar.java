@@ -182,7 +182,7 @@ public class Bar implements InterfaceBar {
 
     @Override
     public void addCardapio(int num, String nome, double valItem, int tipo) throws ItemJaCadastrado, DadosInvalidos{
-        if (num <= 0 || nome == null || nome.isEmpty() || valItem <= 0)
+        if (num < 0 || nome == null || nome.isEmpty() || valItem <= 0)
             throw new DadosInvalidos();
 
         // procura se ja esta cadastrado na memoria
