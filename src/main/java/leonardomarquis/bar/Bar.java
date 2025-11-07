@@ -1,9 +1,6 @@
 package leonardomarquis.bar;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 // com as novas atualizacoes do professor em 03/11/25, o ingresso nao vai para o cardapio, logo ele nao é pego do cardapio,
 // é contabilizado direto. Cpf será coletado como int, e Bar terá: apagarTudo()
@@ -142,9 +139,23 @@ public class Bar implements InterfaceBar {
     @Override
     public double valorDaConta(int numConta) throws ContaInexistente {
         Conta conta = findContaByNumero(numConta);
+
         if (conta == null)
             throw new ContaInexistente();
-        return conta.calcularTotal();
+
+        // se a conta ja foi fechada, pega o valor dela que estiver guardado no Bnaco de Dados
+        // se ainda nao estiver fechada, pega o valor na memoria
+        if (conta.isFechada()){
+            ContaDAO dao = new ContaDAO();
+
+            String numContaString = String.valueOf(numConta);
+            return dao.consultarValorPendente(numContaString);
+        }
+        else{
+            return conta.calcularTotal();
+        }
+
+
     }
 
     @Override
@@ -225,9 +236,45 @@ public class Bar implements InterfaceBar {
         if (conta == null)
             throw new ContaInexistente();
 
+        // Mapa para contar itens
+        Map<String, Integer> contador = new HashMap<>();
+        Map<String, Double> valores = new HashMap<>();
+
+        // Conta quantas vezes cada item aparece e guarda valor
+        for (Item i : conta.getItens()) {
+            contador.put(i.getDescricao(), contador.getOrDefault(i.getDescricao(), 0) + 1);
+            valores.putIfAbsent(i.getDescricao(), i.getValor());
+        }
+
+        // Cria lista final sem repetidos mas com quantidade
+        ArrayList<Consumo> extrato = new ArrayList<>();
+        for (String descricao : contador.keySet()) {
+            int qtd = contador.get(descricao);
+            double valor = valores.get(descricao);
+
+            // Nome formatado: arroz (x2)
+            String descFormatada = descricao + " (x" + qtd + ")";
+            extrato.add(new Consumo(descFormatada, valor));
+        }
+
+        double total = conta.calcularTotal();
+        String total_formatado = String.format("%.2f", total);
+        System.out.println("TOTAL: R$" + total_formatado);
+
+        return extrato;
+    }
+
+
+
+    public ArrayList<Consumo> extratoDeContaExpandido(int numConta) throws ContaInexistente {
+        Conta conta = findContaByNumero(numConta);
+        if (conta == null)
+            throw new ContaInexistente();
+
         ArrayList<Consumo> extrato = new ArrayList<>();
         for (Item i : conta.getItens()) {
             extrato.add(new Consumo(i.getDescricao(), i.getValor()));
+
         }
 
         double total = conta.calcularTotal();
@@ -235,7 +282,6 @@ public class Bar implements InterfaceBar {
 
         return extrato;
     }
-
 
 
 

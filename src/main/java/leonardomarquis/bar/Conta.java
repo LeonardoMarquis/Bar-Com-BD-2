@@ -51,6 +51,7 @@ public class Conta {
             } else if (item.getTipo() == 3) { // comida
                 itens.add(new Item(item.getValor() * 0.15, "Gorjeta (comida)", 0, "00"));
             }
+
         }
     }
 
