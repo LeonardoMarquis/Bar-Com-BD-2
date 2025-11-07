@@ -129,18 +129,16 @@ public class TesteBarResumido {
 		b.abrirConta(1, 1, "Pedro");
 
 
-        b.abrirConta(1, 2, "Raimundo");
-        fail("Deveria ter dado excecao de conta ja aberta.");
 
-
-        //try {
-		//	b.abrirConta(1, 2, "Raimundo");
-		//	fail("Deveria ter dado excecao de conta ja aberta.");
-		//} catch (ContaAberta e) {
+        try {
+			b.abrirConta(1, 2, "Raimundo");
+			fail("Deveria ter dado excecao de conta ja aberta.");
+		} catch (ContaAberta e) {
             // Excecao correta.
-		//}
+		}
         // em ...(ContaAberta e), fica dando erro: Exception 'leonardomarquis.bar.ContaAberta' is never thrown in the corresponding try block
-
+        // PARA dar a excecao pedida, abrir conta deve ter ela em throw, e deve dar ela quando for o caso, e aqui vai esperar ela e
+        // vai ocorrer o catch
 
 		b.fecharConta(1);
 	}

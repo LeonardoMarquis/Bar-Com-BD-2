@@ -46,14 +46,25 @@ public class Bar implements InterfaceBar {
 
     // --- InterfaceBar methods ---
     @Override
-    public void abrirConta(int numConta, int cpf, String nomeCliente) throws DadosInvalidos{
+    public void abrirConta(int numConta, int cpf, String nomeCliente) throws DadosInvalidos, ContaAberta{
 
 
         if (numConta <= 0 || cpf == 0 || nomeCliente == null || nomeCliente.isEmpty())
             throw new DadosInvalidos();
 
         if (findContaByNumero(numConta) != null)
-            throw new IllegalArgumentException("Conta já existe");
+            throw new ContaAberta("Conta já existe");
+
+
+
+        // procura se ja tem conta com esse numero no banco de dados
+        // procura se ja esta cadastrado no BANCO DE DADOS
+        ContaDAO dao = new ContaDAO();
+        if (dao.contaMesmoNumeroJaCadastrada(numConta)){
+            throw new ContaAberta("Ja tem uma conta com esse numero no Banco de Dados");
+        }
+        // tive que colocar a excecao conta aberta, aqui e no interface para poder dar certo no TestBarResumido
+
 
         Conta conta = new Conta(String.valueOf(numConta), 1);
 
@@ -163,19 +174,25 @@ public class Bar implements InterfaceBar {
         if (num <= 0 || nome == null || nome.isEmpty() || valItem <= 0)
             throw new DadosInvalidos();
 
+        // procura se ja esta cadastrado na memoria
         if (findItemByNumero(num) != null)
             throw new ItemJaCadastrado();
+
+        // procura se ja esta cadastrado no BANCO DE DADOS
+        CardapioDAO menu_dao = new CardapioDAO();
+        if (menu_dao.itemJaCadastrado_no_menu(num)){
+            throw new ItemJaCadastrado();
+        }
 
         cardapio.add(new Item(valItem, nome, tipo, String.valueOf(num)));
 
         // para add no MENU do BANCO DE DADOS
-        CardapioDAO menu_dao = new CardapioDAO();
         menu_dao.add_no_menu(num, nome, valItem, tipo);
 
     }
 
     @Override
-    public void registrarPagamento(int numConta, double val)
+    public double registrarPagamento(int numConta, double val)
             throws PagamentoMaior, ContaInexistente, DadosInvalidos{
         if (val <= 0)
             throw new DadosInvalidos();
@@ -197,6 +214,9 @@ public class Bar implements InterfaceBar {
         // ATUALIZA O VALOR PENDENTE NO BANCO DE DADOS
         ContaDAO dao = new ContaDAO();
         dao.atualizarValorPendente(conta.getNumero(), conta.getRestante(), conta.getTotalPago());
+
+        String numContaString = "" + numConta;
+        return dao.consultarValorPendente(numContaString);
     }
 
     @Override

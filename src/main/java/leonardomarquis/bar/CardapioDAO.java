@@ -8,6 +8,30 @@ import java.sql.Statement;
 
 // usando valitem como preco mesmo aqui
 public class CardapioDAO {
+
+    public boolean itemJaCadastrado_no_menu(int num) {
+
+        String sql = "SELECT 1 FROM menu WHERE num = ? LIMIT 1";
+
+        try (Connection con = Conexao.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setInt(1, num);
+
+            // Se achou 1 registro, já existe
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao verificar item no menu: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
     public void add_no_menu(int num, String nome, double preco, int tipo){
 
         String sql = "INSERT INTO menu (num, nome, preco, tipo) VALUES (?, ?, ?, ?)";
@@ -30,5 +54,6 @@ public class CardapioDAO {
             e.printStackTrace();
         }
     }
+
 
 }

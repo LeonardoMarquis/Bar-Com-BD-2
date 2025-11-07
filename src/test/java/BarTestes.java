@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 public class BarTestes {
 
     @Test
-    public void AtendimentoNormal() throws DadosInvalidos, ContaInexistente, ContaFechada, ItemInexistente, ContaNaoFechada, PagamentoMaior, ItemJaCadastrado {
+    public void AtendimentoNormal() throws DadosInvalidos, ContaInexistente, ContaFechada, ItemInexistente, ContaNaoFechada, PagamentoMaior, ItemJaCadastrado, ContaAberta {
         Bar bar1 = new Bar();
         Item ingresso = new Item(2.50, "Ingresso", 1, "01");
         Item terere_300ml =  new Item(8, "Tereré 300ml", 2, "05");

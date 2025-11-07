@@ -158,4 +158,27 @@ public class ContaDAO {
 
 
 
+
+    public boolean contaMesmoNumeroJaCadastrada(int numConta) {
+
+        String sql = "SELECT 1 FROM contas_fechadas WHERE numero_conta = ? LIMIT 1";
+
+        try (Connection con = Conexao.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            // Converte int → String automaticamente
+            stmt.setString(1, String.valueOf(numConta));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();  // Se encontrou, já existe
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao verificar conta: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 }
