@@ -5,8 +5,6 @@ import java.util.*;
 
 public interface InterfaceBar {
     // --- InterfaceBar methods ---
-    void abrirConta(int numConta, String cpf, String nomeCliente) throws DadosInvalidos;
-
     public void abrirConta(int numConta, int cpf, String nomeCliente) throws ContaAberta, ContaInexistente, DadosInvalidos;
     public void addPedido(int numConta, int numItem, int quant) throws ContaFechada, ContaInexistente, ItemInexistente, DadosInvalidos;
     public double valorDaConta(int numConta) throws ContaInexistente;

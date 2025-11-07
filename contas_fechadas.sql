@@ -1,0 +1,1 @@
+SELECT * FROM bar_banco.contas_fechadas;

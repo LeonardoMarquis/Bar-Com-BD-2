@@ -11,6 +11,7 @@ import java.util.List;
 
 // Esse Bar.java, ja tem metodos funcionando localmente, e tem certos metodos com atividades no banco de dados
 // e tem metodos que mexem exclusivamente com alguma coisa no banco de dados
+
 public class Bar implements InterfaceBar {
 
     private List<Conta> contas = new ArrayList<>();
@@ -45,10 +46,10 @@ public class Bar implements InterfaceBar {
 
     // --- InterfaceBar methods ---
     @Override
-    public void abrirConta(int numConta, String cpf, String nomeCliente) throws DadosInvalidos {
+    public void abrirConta(int numConta, int cpf, String nomeCliente) throws DadosInvalidos{
 
 
-        if (numConta <= 0 || cpf.isEmpty() || nomeCliente == null || nomeCliente.isEmpty())
+        if (numConta <= 0 || cpf == 0 || nomeCliente == null || nomeCliente.isEmpty())
             throw new DadosInvalidos();
 
         if (findContaByNumero(numConta) != null)
@@ -72,11 +73,12 @@ public class Bar implements InterfaceBar {
         contas.add(conta);
     }
 
-    @Override
-    public void abrirConta(int numConta, int cpf, String nomeCliente) throws ContaAberta, ContaInexistente, DadosInvalidos {
+    //@Override
+    //public void abrirConta(int numConta, int cpf, String nomeCliente) throws ContaAberta, ContaInexistente, DadosInvalidos {
 
-    }
+    //}
 
+    // so precisa de @Override se o metodo ja existir na classe mae dessa classe aqui
     @Override
     public void addPedido(int numConta, int numItem, int quant)
             throws ContaFechada, ContaInexistente, ItemInexistente, DadosInvalidos {
@@ -94,6 +96,12 @@ public class Bar implements InterfaceBar {
             throw new ItemInexistente();
 
         conta.adicionarItem(item, quant);
+
+        // para ADD na tabela pedidos do BANCO DE DADOS
+        PedidoDAO pedidoDAO = new PedidoDAO();
+        pedidoDAO.add_no_pedido(numConta, numItem, quant);
+
+
     }
 
     @Override
@@ -151,7 +159,7 @@ public class Bar implements InterfaceBar {
     }
 
     @Override
-    public void addCardapio(int num, String nome, double valItem, int tipo) throws ItemJaCadastrado, DadosInvalidos {
+    public void addCardapio(int num, String nome, double valItem, int tipo) throws ItemJaCadastrado, DadosInvalidos{
         if (num <= 0 || nome == null || nome.isEmpty() || valItem <= 0)
             throw new DadosInvalidos();
 
@@ -159,18 +167,25 @@ public class Bar implements InterfaceBar {
             throw new ItemJaCadastrado();
 
         cardapio.add(new Item(valItem, nome, tipo, String.valueOf(num)));
+
+        // para add no MENU do BANCO DE DADOS
+        CardapioDAO menu_dao = new CardapioDAO();
+        menu_dao.add_no_menu(num, nome, valItem, tipo);
+
     }
 
     @Override
     public void registrarPagamento(int numConta, double val)
-            throws PagamentoMaior, ContaInexistente, DadosInvalidos {
+            throws PagamentoMaior, ContaInexistente, DadosInvalidos{
         if (val <= 0)
             throw new DadosInvalidos();
 
         Conta conta = findContaByNumero(numConta);
         if (conta == null)
             throw new ContaInexistente();
-
+        //if (!conta.isFechada())
+            //throw new ContaNaoFechada();
+        // e teria que ter no throws aqui, e teria que ter na InterfaceBar tambem
 
         double restante = conta.getRestante();
         if (val > restante)
@@ -204,6 +219,17 @@ public class Bar implements InterfaceBar {
 
 
 
+
+
+    // metodo para apagar os dados das tabelas no BANCO DE DADOS
+    public void apagarTudo(){
+        // é como chamar um DAO como os outros metodos, mas como apagar dados das tabelas é algo bem mais
+        // geral, vai ficar nesse ...Service...java
+
+        BarServiceBD serviceBd = new BarServiceBD();
+        serviceBd.limparDados();
+
+    }
 
 
 

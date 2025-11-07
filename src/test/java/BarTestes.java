@@ -26,7 +26,7 @@ public class BarTestes {
 
 
 
-        bar1.abrirConta(1, "2222222222", "Luiz");
+        bar1.abrirConta(1, 222, "Luiz");
         bar1.addPessoasNaConta(1, 3);
 
         bar1.addPedido(1, 6, 2);
@@ -83,4 +83,10 @@ public class BarTestes {
         // talvez fosse bom so retornar, mesmo, e fazer o system.out printl aqui
         bar1.consultarHistoricoContasFechadas();
     }
+
+    //@Test
+    //public void deletar_dados(){
+        //Bar bar1 = new Bar();
+        //bar1.apagarTudo();
+    //}
 }

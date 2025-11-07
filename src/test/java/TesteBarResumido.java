@@ -123,16 +123,25 @@ public class TesteBarResumido {
 	}
 	
 	@Test
-	public void testarContaJaExistente() throws ContaInexistente, ContaAberta, DadosInvalidos, ClassNotFoundException, SQLException, ContaJaCadastrada, ItemInexistente{
+	public void testarContaJaExistente() throws ContaInexistente, ContaAberta, DadosInvalidos, ClassNotFoundException, SQLException, ContaJaCadastrada, ItemInexistente, ContaAberta{
 		Bar b = new Bar();
 		b.apagarTudo();
 		b.abrirConta(1, 1, "Pedro");
-		try {
-			b.abrirConta(1, 2, "Raimundo");
-			fail("Deveria ter dado excecao de conta ja aberta.");
-		} catch (ContaAberta e) {
+
+
+        b.abrirConta(1, 2, "Raimundo");
+        fail("Deveria ter dado excecao de conta ja aberta.");
+
+
+        //try {
+		//	b.abrirConta(1, 2, "Raimundo");
+		//	fail("Deveria ter dado excecao de conta ja aberta.");
+		//} catch (ContaAberta e) {
             // Excecao correta.
-		}
+		//}
+        // em ...(ContaAberta e), fica dando erro: Exception 'leonardomarquis.bar.ContaAberta' is never thrown in the corresponding try block
+
+
 		b.fecharConta(1);
 	}
 	
